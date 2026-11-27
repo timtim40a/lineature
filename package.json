@@ -8,9 +8,10 @@
   "license": "ISC",
   "author": "timtim40a",
   "type": "commonjs",
-  "main": "script.js",
+  "main": "js/main.js",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "vendor": "node -e \"const fs=require('fs');fs.copyFileSync('node_modules/fflate/esm/browser.js','js/vendor/fflate.js');fs.copyFileSync('node_modules/fflate/LICENSE','js/vendor/fflate.LICENSE')\""
   },
   "dependencies": {
     "fflate": "^0.8.3"

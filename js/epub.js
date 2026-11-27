@@ -1,6 +1,7 @@
 // Opening an .epub: unzip it, find the OPF, and collect the chapter files in reading order.
 
-import { unzipSync } from '../node_modules/fflate/esm/browser.js';
+// fflate is vendored (copied in) so the site needs no node_modules when deployed; refresh with `npm run vendor`
+import { unzipSync } from './vendor/fflate.js';
 import { utf8decoder } from "./utf8.js";
 
 // Reads a File from an <input type="file">.

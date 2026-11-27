@@ -10,14 +10,15 @@ Lineature is a browser-only EPUB reader whose main feature is reading the book a
 
 - Serve the folder over HTTP, e.g. `npx serve` or VS Code Live Server. ES module scripts do not load from `file://`.
 - There is no build, lint or test setup. The `npm test` script in `package.json` is a placeholder and does not run anything meaningful.
-- `npm install` is needed once, because the page imports fflate straight out of `node_modules`.
+- **Deploying.** The site is fully static: `index.html` plus `js/`, with nothing to build. It deploys to Vercel with framework preset "Other", no build command, and the project root as output. It doesn't need `node_modules` at runtime.
 
 ## Imports
 
 There is no bundler, so the browser resolves imports itself:
 
-- Import dependencies by relative path to their browser ESM build, e.g. `import { unzipSync } from '../node_modules/fflate/esm/browser.js'` from inside `js/`. Bare specifiers like `'fflate'` fail in the browser.
-- `"type": "commonjs"` in `package.json` has no effect on the browser code. It does matter in Node, which treats the `js/` files as CommonJS and can't import them; see Testing.
+- **Dependencies are vendored.** They are copied into `js/vendor/` and imported by relative path, e.g. `import { unzipSync } from './vendor/fflate.js'`. Never import from `node_modules`, which isn't deployed. Bare specifiers like `'fflate'` fail in the browser.
+- **Updating fflate.** fflate stays in `package.json` only as the source for the vendored copy. After updating it, run `npm install` and then `npm run vendor`, which recopies `esm/browser.js` and its LICENSE.
+- **`package.json` type.** `"type": "commonjs"` has no effect on the browser code. It does matter in Node, which treats the `js/` files as CommonJS and can't import them; see Testing.
 
 ## Modules
 
@@ -83,6 +84,6 @@ Modules export their state as live `let` bindings. Importers always see the curr
 
 ## Testing changes
 
-- **Running in Node.** Node can only import the modules as ES modules. Copy `js/` (and `node_modules/fflate`, if `epub.js` or `main.js` is imported) into a scratch folder whose `package.json` is `{"type":"module"}`.
+- **Running in Node.** Node can only import the modules as ES modules. Copy `js/` into a scratch folder whose `package.json` is `{"type":"module"}`; the vendored fflate comes along with it.
 - **Fake DOM.** Stub `document`, `ResizeObserver`, `requestAnimationFrame` and a minimal `DOMParser` / `NodeFilter`. With those, importing `main.js` runs the real wiring. Check display behaviour from the DOM: span texts, `track.style.transform`, and the chunk under the anchor against `currentChunkNumber`. Check chunk text against `[...text]` slices on text with mixed scripts and emoji.
 - **Needs a browser.** Real text extraction, OPF parsing, CSS layout and font measurement need a browser and a real EPUB.
