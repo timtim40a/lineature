@@ -1,0 +1,18 @@
+{
+  "name": "lineature",
+  "version": "2.0.0",
+  "description": "epub decoder with a horizontal scrollbar for reading as the main feature",
+  "keywords": [
+    "epub"
+  ],
+  "license": "ISC",
+  "author": "timtim40a",
+  "type": "commonjs",
+  "main": "script.js",
+  "scripts": {
+    "test": "test"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3"
+  }
+}

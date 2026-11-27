@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lineature</title>
+    <style>
+        /* the window the text scrolls through */
+        #reader {
+            position: relative;
+            overflow: hidden;
+            height: 2em;
+            /* customisable: js/settings.js sets these variables */
+            font-family: var(--reader-font-family, serif);
+            font-size: var(--reader-font-size, 2rem);
+            font-weight: var(--reader-font-weight, normal);
+            letter-spacing: var(--reader-letter-spacing, normal);
+            word-spacing: var(--reader-word-spacing, normal);
+            color: var(--reader-color, inherit);
+            background: var(--reader-bg, transparent);
+            /* dragging: horizontal touch drags go to js/drag.js (vertical still scrolls the page), no text selection */
+            touch-action: pan-y;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        /* one long line holding the chunk spans; moved with transform by js/display.js */
+        #track {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: max-content;
+            display: flex;
+            align-items: center;
+            will-change: transform;
+        }
+        /* pre keeps runs of spaces (paragraph separators, space gap) from collapsing */
+        .chunk {
+            flex: none;
+            white-space: pre;
+        }
+    </style>
+</head>
+<body>
+    <form>
+    <input type="file" id="file_input" accept="application/epub+zip, application/x-fictionbook+xml, text/plain">
+    </input>
+    <button type="submit" id="file_submit">
+        Submit
+    </button>
+    </form>
+    <label for="space_gap">Space gap after a chapter:</label>
+    <input type="number" id="space_gap" min="0" step="1" value="0">
+    <button type="button" id="play_pause">Play</button>
+    <label for="speed">Speed (characters/second):</label>
+    <input type="number" id="speed" min="1" step="1" value="15">
+
+    <!-- every [data-setting] input is bound by js/settings.js; values are saved between visits -->
+    <fieldset id="settings">
+        <legend>Reader</legend>
+
+        <label for="setting_font_family">Font:</label>
+        <select id="setting_font_family" data-setting="fontFamily">
+            <option value="serif">Serif</option>
+            <option value="sans-serif">Sans-serif</option>
+            <option value="monospace">Monospace</option>
+            <option value="Georgia, serif">Georgia</option>
+            <option value="&quot;Times New Roman&quot;, Times, serif">Times New Roman</option>
+            <option value="Arial, Helvetica, sans-serif">Arial</option>
+            <option value="Verdana, Geneva, sans-serif">Verdana</option>
+            <option value="&quot;Trebuchet MS&quot;, sans-serif">Trebuchet MS</option>
+            <option value="&quot;Courier New&quot;, monospace">Courier New</option>
+        </select>
+
+        <label for="font_file">Use your own font:</label>
+        <input type="file" id="font_file" accept=".ttf,.otf,.woff,.woff2,font/ttf,font/otf,font/woff,font/woff2">
+
+        <label for="setting_font_size">Size (px):</label>
+        <input type="number" id="setting_font_size" data-setting="fontSize" min="8" max="200" step="1">
+
+        <label for="setting_font_weight">Weight:</label>
+        <input type="number" id="setting_font_weight" data-setting="fontWeight" min="100" max="900" step="100">
+
+        <label for="setting_letter_spacing">Letter spacing (em):</label>
+        <input type="number" id="setting_letter_spacing" data-setting="letterSpacing" min="-0.2" max="1" step="0.01">
+
+        <label for="setting_word_spacing">Word spacing (em):</label>
+        <input type="number" id="setting_word_spacing" data-setting="wordSpacing" min="-0.5" max="3" step="0.05">
+
+        <label for="setting_text_color">Text colour:</label>
+        <input type="color" id="setting_text_color" data-setting="textColor">
+
+        <label for="setting_background_color">Background:</label>
+        <input type="color" id="setting_background_color" data-setting="backgroundColor">
+
+        <label for="setting_paragraph_separator">Paragraph separator:</label>
+        <input type="text" id="setting_paragraph_separator" data-setting="paragraphSeparator">
+
+        <button type="button" id="reset_settings">Reset</button>
+    </fieldset>
+    <div id="reader">
+        <div id="track"></div>
+    </div>
+    <script src="js/main.js" type="module"></script>
+</body>
+</html>
